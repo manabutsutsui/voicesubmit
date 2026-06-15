@@ -18,18 +18,24 @@ struct SendVoiceView: View {
         }
         .navigationTitle("声を届ける")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("エラー", isPresented: Binding(
-            get: { viewModel.errorMessage != nil },
-            set: { if !$0 { viewModel.errorMessage = nil } }
-        )) {
+        .alert(
+            "エラー",
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { if !$0 { viewModel.errorMessage = nil } }
+            )
+        ) {
             Button("OK", role: .cancel) { viewModel.errorMessage = nil }
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
-        .alert("送信完了", isPresented: Binding(
-            get: { viewModel.showSendSuccessAlert },
-            set: { viewModel.showSendSuccessAlert = $0 }
-        )) {
+        .alert(
+            "送信完了",
+            isPresented: Binding(
+                get: { viewModel.showSendSuccessAlert },
+                set: { viewModel.showSendSuccessAlert = $0 }
+            )
+        ) {
             Button("OK", role: .cancel) {}
         } message: {
             Text("声を送りました。")
@@ -43,12 +49,9 @@ private struct IdleView: View {
     var body: some View {
         VStack(spacing: 40) {
             Spacer()
-            Image(systemName: "mic.circle.fill")
+            Image(systemName: "mic.fill")
                 .font(.system(size: 100))
-                .foregroundStyle(.tint)
             Text("マイクボタンを押して\n録音を開始してください")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             Spacer()
             Button {
@@ -79,7 +82,9 @@ private struct RecordingView: View {
                     .fill(Color.accentColor.opacity(0.12))
                     .frame(width: 120, height: 120)
                     .scaleEffect(isPulsing ? 1.18 : 1.0)
-                    .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: isPulsing)
+                    .animation(
+                        .easeInOut(duration: 0.8).repeatForever(autoreverses: true),
+                        value: isPulsing)
                 Image(systemName: "mic.fill")
                     .font(.system(size: 48))
             }
@@ -115,22 +120,15 @@ private struct ReviewingView: View {
         VStack(spacing: 32) {
             Spacer()
             Image(systemName: "waveform.circle.fill")
-                .font(.system(size: 80))
-                .foregroundStyle(.tint)
+                .font(.system(size: 100))
             Text(viewModel.elapsedTime.mmss)
-                .font(.system(size: 36, weight: .thin, design: .monospaced))
-                .foregroundStyle(.secondary)
+                .font(.system(size: 48, weight: .thin, design: .monospaced))
             WaveformView(
                 samples: viewModel.waveformSamples,
-                color: viewModel.state == .playing ? .accentColor : .secondary
+                color: .accentColor
             )
             .frame(height: 64)
             .animation(.easeInOut(duration: 0.1), value: viewModel.waveformSamples.count)
-            if viewModel.state != .playing {
-                Text("録音が完了しました")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
             Spacer()
             VStack(spacing: 12) {
                 if case .uploading(let progress) = viewModel.state {
@@ -169,18 +167,20 @@ private struct ReviewingView: View {
                         .padding()
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled({
-                    if case .uploading = viewModel.state { return true }
-                    return false
-                }())
+                .disabled(
+                    {
+                        if case .uploading = viewModel.state { return true }
+                        return false
+                    }())
                 Button("録り直す") {
                     viewModel.discardRecording()
                 }
                 .padding(.top, 4)
-                .disabled({
-                    if case .uploading = viewModel.state { return true }
-                    return false
-                }())
+                .disabled(
+                    {
+                        if case .uploading = viewModel.state { return true }
+                        return false
+                    }())
             }
             .padding(.horizontal)
             .padding(.bottom, 32)
@@ -246,8 +246,8 @@ struct WaveformView: View {
     }
 }
 
-private extension TimeInterval {
-    var mmss: String {
+extension TimeInterval {
+    fileprivate var mmss: String {
         let total = Int(self)
         return String(format: "%02d:%02d", total / 60, total % 60)
     }

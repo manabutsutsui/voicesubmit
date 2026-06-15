@@ -25,9 +25,27 @@ final class VoiceHistoryService {
         return records.sorted { $0.createdAt > $1.createdAt }
     }
 
+    func delete(id: UUID) {
+        var records = load()
+        records.removeAll { $0.id == id }
+        save(records)
+    }
+
+    func updateTitle(id: UUID, title: String) {
+        var records = load()
+        if let index = records.firstIndex(where: { $0.id == id }) {
+            records[index].title = title.isEmpty ? nil : title
+        }
+        save(records)
+    }
+
     private func add(_ record: VoiceRecord) {
         var records = load()
         records.append(record)
+        save(records)
+    }
+
+    private func save(_ records: [VoiceRecord]) {
         if let data = try? encoder.encode(records) {
             UserDefaults.standard.set(data, forKey: key)
         }

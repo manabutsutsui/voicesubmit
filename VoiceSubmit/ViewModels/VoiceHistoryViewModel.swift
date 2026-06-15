@@ -53,4 +53,16 @@ final class VoiceHistoryViewModel {
         playerService.stop()
         playState = .idle
     }
+
+    func delete(record: VoiceRecord) {
+        if case .playing(let id) = playState, id == record.id { stop() }
+        if case .loading(let id) = playState, id == record.id { stop() }
+        historyService.delete(id: record.id)
+        records = historyService.load()
+    }
+
+    func updateTitle(record: VoiceRecord, title: String) {
+        historyService.updateTitle(id: record.id, title: title)
+        records = historyService.load()
+    }
 }

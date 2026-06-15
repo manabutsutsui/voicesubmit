@@ -17,7 +17,6 @@ final class AppOpenAdManager: NSObject {
     /// Keeps track of the time when an app open ad was loaded to discard expired ad.
     private var loadTime: Date?
 
-    /// AdUnitID（`Secrets.plist` の `AdMobAppOpenAdUnitID`）の取得関数
     private var adUnitIDProvider: () -> String = {
         guard let path = Bundle.main.path(forResource: "Info", ofType: "plist"),
               let dict = NSDictionary(contentsOfFile: path),
