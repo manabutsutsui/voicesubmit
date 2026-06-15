@@ -18,6 +18,7 @@ final class AudioRecorderViewModel {
     var elapsedTime: TimeInterval = 0
     var waveformSamples: [Float] = []
     var errorMessage: String?
+    var showSendSuccessAlert = false
 
     private let service = AudioRecorderService()
     private var meterTimer: Timer?
@@ -125,6 +126,7 @@ final class AudioRecorderViewModel {
             ])
             VoiceHistoryService.shared.addSent(storagePath: storageRef.fullPath)
             discardRecording()
+            showSendSuccessAlert = true
         }
 
         uploadTask.observe(.failure) { [weak self] snapshot in

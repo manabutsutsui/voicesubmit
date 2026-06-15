@@ -26,6 +26,14 @@ struct SendVoiceView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .alert("送信完了", isPresented: Binding(
+            get: { viewModel.showSendSuccessAlert },
+            set: { viewModel.showSendSuccessAlert = $0 }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("声を送信しました")
+        }
     }
 }
 
