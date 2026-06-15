@@ -32,7 +32,7 @@ struct SendVoiceView: View {
         )) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("声を送信しました")
+            Text("声を送りました。")
         }
     }
 }

@@ -11,6 +11,7 @@
 		831990E62FDF9D0700773803 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 831990E52FDF9D0700773803 /* FirebaseStorage */; };
 		831990E82FDF9D7700773803 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 831990E72FDF9D7700773803 /* FirebaseAnalytics */; };
 		831990EA2FDF9D7C00773803 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 831990E92FDF9D7C00773803 /* FirebaseCore */; };
+		831990FA2FDFDE4800773803 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 831990F92FDFDE4800773803 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,9 +37,22 @@
 		831990292FDD5BD100773803 /* VoiceSubmitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceSubmitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8306A03D2FDFE0ED0088924B /* Exceptions for "VoiceSubmit" folder in "VoiceSubmit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 831990112FDD5BCE00773803 /* VoiceSubmit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		831990142FDD5BCE00773803 /* VoiceSubmit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8306A03D2FDFE0ED0088924B /* Exceptions for "VoiceSubmit" folder in "VoiceSubmit" target */,
+			);
 			path = VoiceSubmit;
 			sourceTree = "<group>";
 		};
@@ -61,6 +75,7 @@
 			files = (
 				831990E42FDF9D0000773803 /* FirebaseFirestore in Frameworks */,
 				831990E62FDF9D0700773803 /* FirebaseStorage in Frameworks */,
+				831990FA2FDFDE4800773803 /* GoogleMobileAds in Frameworks */,
 				831990EA2FDF9D7C00773803 /* FirebaseCore in Frameworks */,
 				831990E82FDF9D7700773803 /* FirebaseAnalytics in Frameworks */,
 			);
@@ -135,6 +150,7 @@
 				831990E52FDF9D0700773803 /* FirebaseStorage */,
 				831990E72FDF9D7700773803 /* FirebaseAnalytics */,
 				831990E92FDF9D7C00773803 /* FirebaseCore */,
+				831990F92FDFDE4800773803 /* GoogleMobileAds */,
 			);
 			productName = VoiceSubmit;
 			productReference = 831990122FDD5BCE00773803 /* VoiceSubmit.app */;
@@ -427,9 +443,12 @@
 				DEVELOPMENT_TEAM = ZARJ5YG3LL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VoiceSubmit/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SendVoice;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "声を録音するためにマイクを使用します";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "このアプリは広告のカスタマイズのため、トラッキングを利用します。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -464,9 +483,12 @@
 				DEVELOPMENT_TEAM = ZARJ5YG3LL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = VoiceSubmit/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SendVoice;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "声を録音するためにマイクを使用します";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "このアプリは広告のカスタマイズのため、トラッキングを利用します。";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -655,6 +677,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 831990E12FDF9CD800773803 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCore;
+		};
+		831990F92FDFDE4800773803 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 831990EF2FDFC0FF00773803 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
