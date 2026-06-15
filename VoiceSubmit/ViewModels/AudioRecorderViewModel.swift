@@ -1,11 +1,14 @@
+import FirebaseFirestore
+import FirebaseStorage
 import Foundation
 
-enum RecordingState {
+enum RecordingState: Equatable {
     case idle
     case requesting
     case recording
     case reviewing
     case playing
+    case uploading(progress: Double)
     case denied
 }
 
@@ -99,8 +102,35 @@ final class AudioRecorderViewModel {
     }
 
     func onSend() {
-        // 将来: ネットワーク送信処理をここに追加
-        discardRecording()
+        guard let localURL = service.recordedURL else { return }
+        let storageRef = Storage.storage()
+            .reference()
+            .child("voices/\(UUID().uuidString).m4a")
+
+        let uploadTask = storageRef.putFile(from: localURL, metadata: nil)
+
+        uploadTask.observe(.progress) { [weak self] snapshot in
+            guard let self, let progress = snapshot.progress else { return }
+            let fraction = progress.totalUnitCount > 0
+                ? Double(progress.completedUnitCount) / Double(progress.totalUnitCount)
+                : 0
+            self.state = .uploading(progress: fraction)
+        }
+
+        uploadTask.observe(.success) { [weak self] _ in
+            guard let self else { return }
+            Firestore.firestore().collection("voices").addDocument(data: [
+                "storagePath": storageRef.fullPath,
+                "createdAt": Timestamp()
+            ])
+            discardRecording()
+        }
+
+        uploadTask.observe(.failure) { [weak self] snapshot in
+            guard let self else { return }
+            errorMessage = snapshot.error?.localizedDescription ?? "アップロードに失敗しました"
+            state = .reviewing
+        }
     }
 
     // MARK: - Private

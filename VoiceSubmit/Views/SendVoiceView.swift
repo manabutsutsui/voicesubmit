@@ -10,7 +10,7 @@ struct SendVoiceView: View {
                 IdleView(viewModel: viewModel)
             case .recording:
                 RecordingView(viewModel: viewModel)
-            case .reviewing, .playing:
+            case .reviewing, .playing, .uploading:
                 ReviewingView(viewModel: viewModel)
             case .denied:
                 DeniedView()
@@ -125,7 +125,13 @@ private struct ReviewingView: View {
             }
             Spacer()
             VStack(spacing: 12) {
-                if viewModel.state == .playing {
+                if case .uploading(let progress) = viewModel.state {
+                    ProgressView(value: progress)
+                        .padding(.horizontal)
+                    Text("\(Int(progress * 100))% アップロード中...")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else if viewModel.state == .playing {
                     Button {
                         viewModel.stopPlayback()
                     } label: {
@@ -155,10 +161,18 @@ private struct ReviewingView: View {
                         .padding()
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled({
+                    if case .uploading = viewModel.state { return true }
+                    return false
+                }())
                 Button("録り直す") {
                     viewModel.discardRecording()
                 }
                 .padding(.top, 4)
+                .disabled({
+                    if case .uploading = viewModel.state { return true }
+                    return false
+                }())
             }
             .padding(.horizontal)
             .padding(.bottom, 32)
