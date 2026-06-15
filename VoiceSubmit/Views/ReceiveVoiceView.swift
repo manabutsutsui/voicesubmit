@@ -88,9 +88,16 @@ private struct ReceiveReadyView: View {
             Image(systemName: "waveform.circle.fill")
                 .font(.system(size: 100))
                 .foregroundStyle(.tint)
-            Text("声が届いています")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            VStack(spacing: 6) {
+                if let title = viewModel.currentTitle, !title.isEmpty {
+                    Text(title)
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                }
+                Text("声が届いています")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
             Spacer()
             VStack(spacing: 12) {
                 Button {
@@ -134,9 +141,16 @@ private struct ReceivePlayingView: View {
             .onAppear { isPulsing = true }
             WaveformView(samples: viewModel.waveformSamples, color: .accentColor)
                 .frame(height: 64)
-            Text("再生中…")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            VStack(spacing: 4) {
+                if let title = viewModel.currentTitle, !title.isEmpty {
+                    Text(title)
+                        .font(.headline)
+                        .multilineTextAlignment(.center)
+                }
+                Text("再生中…")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
             Spacer()
             Button {
                 viewModel.stopPlayback()
@@ -166,9 +180,15 @@ private struct ReceiveFinishedView: View {
             VStack(spacing: 8) {
                 Text("声が届きました")
                     .font(.headline)
-                Text("誰かの想いを受け取りました")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                if let title = viewModel.currentTitle, !title.isEmpty {
+                    Text(title)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                } else {
+                    Text("誰かの想いを受け取りました")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
             }
             Spacer()
             VStack(spacing: 12) {

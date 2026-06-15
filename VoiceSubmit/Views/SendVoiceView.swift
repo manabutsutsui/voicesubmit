@@ -129,6 +129,18 @@ private struct ReviewingView: View {
             )
             .frame(height: 64)
             .animation(.easeInOut(duration: 0.1), value: viewModel.waveformSamples.count)
+            HStack {
+                Image(systemName: "tag")
+                    .foregroundStyle(.secondary)
+                TextField("タイトル（任意）", text: Binding(
+                    get: { viewModel.title },
+                    set: { viewModel.title = $0 }
+                ))
+                .autocorrectionDisabled()
+                .submitLabel(.done)
+            }
+            .padding()
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
             Spacer()
             VStack(spacing: 12) {
                 if case .uploading(let progress) = viewModel.state {
@@ -182,9 +194,9 @@ private struct ReviewingView: View {
                         return false
                     }())
             }
-            .padding(.horizontal)
             .padding(.bottom, 32)
         }
+        .padding()
     }
 }
 

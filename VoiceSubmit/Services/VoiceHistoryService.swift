@@ -9,12 +9,12 @@ final class VoiceHistoryService {
 
     private init() {}
 
-    func addSent(storagePath: String) {
-        add(VoiceRecord(id: UUID(), storagePath: storagePath, createdAt: Date(), kind: .sent))
+    func addSent(storagePath: String, title: String? = nil) {
+        add(VoiceRecord(id: UUID(), storagePath: storagePath, createdAt: Date(), kind: .sent, title: title))
     }
 
-    func addReceived(storagePath: String) {
-        add(VoiceRecord(id: UUID(), storagePath: storagePath, createdAt: Date(), kind: .received))
+    func addReceived(storagePath: String, title: String? = nil) {
+        add(VoiceRecord(id: UUID(), storagePath: storagePath, createdAt: Date(), kind: .received, title: title))
     }
 
     func load() -> [VoiceRecord] {

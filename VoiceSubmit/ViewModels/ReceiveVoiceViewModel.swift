@@ -15,6 +15,7 @@ final class ReceiveVoiceViewModel {
     var state: ReceiveVoiceState = .idle
     var errorMessage: String?
     var waveformSamples: [Float] = []
+    var currentTitle: String? = nil
 
     private let service = VoicePlayerService()
     private var meterTimer: Timer?
@@ -52,9 +53,11 @@ final class ReceiveVoiceViewModel {
                 return
             }
 
+            currentTitle = randomDoc.data()["title"] as? String
+
             service.cleanup()
             try await service.downloadAndPrepare(storagePath: storagePath)
-            VoiceHistoryService.shared.addReceived(storagePath: storagePath)
+            VoiceHistoryService.shared.addReceived(storagePath: storagePath, title: currentTitle)
             state = .ready
         } catch {
             errorMessage = error.localizedDescription
@@ -84,6 +87,7 @@ final class ReceiveVoiceViewModel {
         service.cleanup()
         waveformSamples = []
         errorMessage = nil
+        currentTitle = nil
         state = .idle
     }
 

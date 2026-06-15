@@ -19,6 +19,7 @@ final class AudioRecorderViewModel {
     var waveformSamples: [Float] = []
     var errorMessage: String?
     var showSendSuccessAlert = false
+    var title: String = ""
 
     private let service = AudioRecorderService()
     private var meterTimer: Timer?
@@ -99,6 +100,7 @@ final class AudioRecorderViewModel {
         elapsedTime = 0
         waveformSamples = []
         recordingStartDate = nil
+        title = ""
         state = .idle
     }
 
@@ -120,11 +122,15 @@ final class AudioRecorderViewModel {
 
         uploadTask.observe(.success) { [weak self] _ in
             guard let self else { return }
-            Firestore.firestore().collection("voices").addDocument(data: [
+            var firestoreData: [String: Any] = [
                 "storagePath": storageRef.fullPath,
                 "createdAt": Timestamp()
-            ])
-            VoiceHistoryService.shared.addSent(storagePath: storageRef.fullPath)
+            ]
+            if !self.title.isEmpty {
+                firestoreData["title"] = self.title
+            }
+            Firestore.firestore().collection("voices").addDocument(data: firestoreData)
+            VoiceHistoryService.shared.addSent(storagePath: storageRef.fullPath, title: self.title.isEmpty ? nil : self.title)
             discardRecording()
             showSendSuccessAlert = true
         }

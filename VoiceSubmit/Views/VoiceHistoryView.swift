@@ -90,8 +90,6 @@ struct VoiceHistoryView: View {
     }
 }
 
-// MARK: - Edit Title Sheet
-
 private struct EditTitleSheet: View {
     let record: VoiceRecord
     let onSave: (String) -> Void
