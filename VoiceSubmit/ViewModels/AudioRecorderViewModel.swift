@@ -123,6 +123,7 @@ final class AudioRecorderViewModel {
                 "storagePath": storageRef.fullPath,
                 "createdAt": Timestamp()
             ])
+            VoiceHistoryService.shared.addSent(storagePath: storageRef.fullPath)
             discardRecording()
         }
 

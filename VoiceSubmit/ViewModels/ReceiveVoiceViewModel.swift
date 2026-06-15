@@ -54,6 +54,7 @@ final class ReceiveVoiceViewModel {
 
             service.cleanup()
             try await service.downloadAndPrepare(storagePath: storagePath)
+            VoiceHistoryService.shared.addReceived(storagePath: storagePath)
             state = .ready
         } catch {
             errorMessage = error.localizedDescription

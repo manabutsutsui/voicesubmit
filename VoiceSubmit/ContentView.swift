@@ -7,6 +7,10 @@ struct ContentView: View {
                 .tabItem {
                     Label("ホーム", systemImage: "house")
                 }
+            VoiceHistoryView()
+                .tabItem {
+                    Label("履歴", systemImage: "clock")
+                }
             SettingsView()
                 .tabItem {
                     Label("設定", systemImage: "gearshape")
