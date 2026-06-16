@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ReceiveVoiceView: View {
     @State private var viewModel = ReceiveVoiceViewModel()
+    @State private var isReportSheetPresented = false
 
     var body: some View {
         Group {
@@ -22,6 +23,22 @@ struct ReceiveVoiceView: View {
         }
         .navigationTitle("声を受け取る")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if [.ready, .playing, .finished].contains(viewModel.state) {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        isReportSheetPresented = true
+                    } label: {
+                        Image(systemName: viewModel.isReported ? "flag.fill" : "flag")
+                            .foregroundStyle(viewModel.isReported ? .secondary : .primary)
+                    }
+                    .disabled(viewModel.isReported)
+                }
+            }
+        }
+        .sheet(isPresented: $isReportSheetPresented) {
+            ReportSheet(viewModel: viewModel)
+        }
         .alert(
             "エラー",
             isPresented: Binding(
@@ -243,5 +260,83 @@ private struct ReceiveEmptyView: View {
             .padding(.bottom, 32)
         }
         .padding(.horizontal)
+    }
+}
+
+private struct ReportSheet: View {
+    let viewModel: ReceiveVoiceViewModel
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedReason: ReportReason?
+    @State private var showConfirmation = false
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    ForEach(ReportReason.allCases, id: \.self) { reason in
+                        Button {
+                            selectedReason = reason
+                            showConfirmation = true
+                        } label: {
+                            HStack {
+                                Text(reason.rawValue)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                Section {
+                    NavigationLink {
+                        CommunityGuidelinesView()
+                    } label: {
+                        Label("コミュニティガイドラインを読む", systemImage: "person.2")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .navigationTitle("通報する理由を選択")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") { dismiss() }
+                }
+            }
+            .confirmationDialog(
+                "通報しますか？",
+                isPresented: $showConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("通報する", role: .destructive) {
+                    guard let reason = selectedReason else { return }
+                    Task {
+                        await viewModel.reportVoice(reason: reason)
+                        dismiss()
+                    }
+                }
+                Button("キャンセル", role: .cancel) {
+                    selectedReason = nil
+                }
+            } message: {
+                if let reason = selectedReason {
+                    Text("「\(reason.rawValue)」として通報します。")
+                }
+            }
+            .overlay {
+                if viewModel.isReporting {
+                    ZStack {
+                        Color.black.opacity(0.3).ignoresSafeArea()
+                        ProgressView()
+                            .tint(.white)
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
     }
 }

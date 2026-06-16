@@ -19,6 +19,18 @@ struct SettingsView: View {
                     LabeledContent("バージョン", value: appVersion)
                     LabeledContent("アプリ名", value: appDisplayName)
                 }
+                Section("法的情報") {
+                    NavigationLink {
+                        TermsOfServiceView()
+                    } label: {
+                        Label("利用規約", systemImage: "doc.text")
+                    }
+                    NavigationLink {
+                        CommunityGuidelinesView()
+                    } label: {
+                        Label("コミュニティガイドライン", systemImage: "person.2")
+                    }
+                }
             }
             .navigationTitle("設定")
         }

@@ -16,9 +16,13 @@ final class ReceiveVoiceViewModel {
     var errorMessage: String?
     var waveformSamples: [Float] = []
     var currentTitle: String? = nil
+    var isReported: Bool = false
+    var isReporting: Bool = false
 
     private let service = VoicePlayerService()
+    private let reportService = ReportService()
     private var meterTimer: Timer?
+    private var currentStoragePath: String?
 
     private let sampleInterval: TimeInterval = 0.05
     private let maxSamples = 60
@@ -54,6 +58,8 @@ final class ReceiveVoiceViewModel {
             }
 
             currentTitle = randomDoc.data()["title"] as? String
+            currentStoragePath = storagePath
+            isReported = false
 
             service.cleanup()
             try await service.downloadAndPrepare(storagePath: storagePath)
@@ -88,7 +94,22 @@ final class ReceiveVoiceViewModel {
         waveformSamples = []
         errorMessage = nil
         currentTitle = nil
+        currentStoragePath = nil
+        isReported = false
+        isReporting = false
         state = .idle
+    }
+
+    func reportVoice(reason: ReportReason) async {
+        guard let path = currentStoragePath, !isReported else { return }
+        isReporting = true
+        do {
+            try await reportService.report(storagePath: path, reason: reason)
+            isReported = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isReporting = false
     }
 
     // MARK: - Private
