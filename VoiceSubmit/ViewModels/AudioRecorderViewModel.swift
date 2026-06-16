@@ -142,8 +142,6 @@ final class AudioRecorderViewModel {
         }
     }
 
-    // MARK: - Private
-
     private func startMeterTimer(sampling: @escaping () -> Void) {
         meterTimer?.invalidate()
         meterTimer = Timer.scheduledTimer(withTimeInterval: sampleInterval, repeats: true) { _ in
