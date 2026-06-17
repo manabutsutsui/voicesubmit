@@ -18,6 +18,7 @@ final class ReceiveVoiceViewModel {
     var currentTitle: String? = nil
     var isReported: Bool = false
     var isReporting: Bool = false
+    var showReceiveSuccessConfetti: Bool = false
 
     private let service = VoicePlayerService()
     private let reportService = ReportService()
@@ -65,6 +66,7 @@ final class ReceiveVoiceViewModel {
             try await service.downloadAndPrepare(storagePath: storagePath)
             VoiceHistoryService.shared.addReceived(storagePath: storagePath, title: currentTitle)
             state = .ready
+            triggerReceiveConfetti()
         } catch {
             errorMessage = error.localizedDescription
             state = .idle
@@ -97,6 +99,7 @@ final class ReceiveVoiceViewModel {
         currentStoragePath = nil
         isReported = false
         isReporting = false
+        showReceiveSuccessConfetti = false
         state = .idle
     }
 
@@ -132,6 +135,14 @@ final class ReceiveVoiceViewModel {
         waveformSamples.append(value)
         if waveformSamples.count > maxSamples {
             waveformSamples.removeFirst()
+        }
+    }
+
+    private func triggerReceiveConfetti() {
+        Task { @MainActor in
+            showReceiveSuccessConfetti = true
+            try? await Task.sleep(nanoseconds: 1_600_000_000)
+            showReceiveSuccessConfetti = false
         }
     }
 }

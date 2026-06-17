@@ -50,6 +50,15 @@ struct ReceiveVoiceView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .overlay {
+            if viewModel.showReceiveSuccessConfetti {
+                ConfettiView()
+                    .allowsHitTesting(false)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.4), value: viewModel.showReceiveSuccessConfetti)
     }
 }
 

@@ -40,6 +40,15 @@ struct SendVoiceView: View {
         } message: {
             Text("声を送りました。")
         }
+        .overlay {
+            if viewModel.showSendSuccessAlert {
+                ConfettiView()
+                    .allowsHitTesting(false)
+                    .ignoresSafeArea()
+                    .transition(.opacity)
+            }
+        }
+        .animation(.easeOut(duration: 0.4), value: viewModel.showSendSuccessAlert)
     }
 }
 
@@ -132,10 +141,13 @@ private struct ReviewingView: View {
             HStack {
                 Image(systemName: "tag")
                     .foregroundStyle(.secondary)
-                TextField("タイトル（任意）", text: Binding(
-                    get: { viewModel.title },
-                    set: { viewModel.title = $0 }
-                ))
+                TextField(
+                    "タイトル（任意）",
+                    text: Binding(
+                        get: { viewModel.title },
+                        set: { viewModel.title = $0 }
+                    )
+                )
                 .autocorrectionDisabled()
                 .submitLabel(.done)
             }
@@ -184,19 +196,22 @@ private struct ReviewingView: View {
                         if case .uploading = viewModel.state { return true }
                         return false
                     }())
+            }
+            .padding(.bottom, 32)
+        }
+        .padding()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("録り直す") {
                     viewModel.discardRecording()
                 }
-                .padding(.top, 4)
                 .disabled(
                     {
                         if case .uploading = viewModel.state { return true }
                         return false
                     }())
             }
-            .padding(.bottom, 32)
         }
-        .padding()
     }
 }
 
