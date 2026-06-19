@@ -126,78 +126,79 @@ private struct ReviewingView: View {
     let viewModel: AudioRecorderViewModel
 
     var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
-            Image(systemName: "waveform.circle.fill")
-                .font(.system(size: 100))
-            Text(viewModel.elapsedTime.mmss)
-                .font(.system(size: 48, weight: .thin, design: .monospaced))
-            WaveformView(
-                samples: viewModel.waveformSamples,
-                color: .accentColor
-            )
-            .frame(height: 64)
-            .animation(.easeInOut(duration: 0.1), value: viewModel.waveformSamples.count)
-            HStack {
-                Image(systemName: "tag")
-                    .foregroundStyle(.secondary)
-                TextField(
-                    "タイトル（任意）",
-                    text: Binding(
-                        get: { viewModel.title },
-                        set: { viewModel.title = $0 }
-                    )
+        ScrollView {
+            VStack(spacing: 32) {
+                Image(systemName: "waveform.circle.fill")
+                    .font(.system(size: 100))
+                Text(viewModel.elapsedTime.mmss)
+                    .font(.system(size: 48, weight: .thin, design: .monospaced))
+                WaveformView(
+                    samples: viewModel.waveformSamples,
+                    color: .accentColor
                 )
-                .autocorrectionDisabled()
-                .submitLabel(.done)
-            }
-            .padding()
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-            Spacer()
-            VStack(spacing: 12) {
-                if case .uploading(let progress) = viewModel.state {
-                    ProgressView(value: progress)
-                        .padding(.horizontal)
-                    Text("\(Int(progress * 100))% アップロード中...")
-                        .font(.caption)
+                .frame(height: 64)
+                .animation(.easeInOut(duration: 0.1), value: viewModel.waveformSamples.count)
+                HStack {
+                    Image(systemName: "tag")
                         .foregroundStyle(.secondary)
-                } else if viewModel.state == .playing {
+                    TextField(
+                        "タイトル（任意）",
+                        text: Binding(
+                            get: { viewModel.title },
+                            set: { viewModel.title = $0 }
+                        )
+                    )
+                    .autocorrectionDisabled()
+                    .submitLabel(.done)
+                }
+                .padding()
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+                Spacer()
+                VStack(spacing: 12) {
+                    if case .uploading(let progress) = viewModel.state {
+                        ProgressView(value: progress)
+                            .padding(.horizontal)
+                        Text("\(Int(progress * 100))% アップロード中...")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if viewModel.state == .playing {
+                        Button {
+                            viewModel.stopPlayback()
+                        } label: {
+                            Label("停止", systemImage: "stop.fill")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        }
+                        .buttonStyle(.bordered)
+                    } else {
+                        Button {
+                            viewModel.startPlayback()
+                        } label: {
+                            Label("再生して確認", systemImage: "play.fill")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        }
+                        .buttonStyle(.bordered)
+                    }
                     Button {
-                        viewModel.stopPlayback()
+                        viewModel.onSend()
                     } label: {
-                        Label("停止", systemImage: "stop.fill")
+                        Label("送信する", systemImage: "paperplane.fill")
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
                     }
-                    .buttonStyle(.bordered)
-                } else {
-                    Button {
-                        viewModel.startPlayback()
-                    } label: {
-                        Label("再生して確認", systemImage: "play.fill")
-                            .font(.headline)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                    }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(
+                        {
+                            if case .uploading = viewModel.state { return true }
+                            return false
+                        }())
                 }
-                Button {
-                    viewModel.onSend()
-                } label: {
-                    Label("送信する", systemImage: "paperplane.fill")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                }
-                .buttonStyle(.borderedProminent)
-                .disabled(
-                    {
-                        if case .uploading = viewModel.state { return true }
-                        return false
-                    }())
+                .padding(.bottom, 32)
             }
-            .padding(.bottom, 32)
         }
         .padding()
         .toolbar {
