@@ -50,15 +50,26 @@ struct ReceiveVoiceView: View {
         } message: {
             Text(viewModel.errorMessage ?? "")
         }
+        .alert(
+            "受信完了",
+            isPresented: Binding(
+                get: { viewModel.showReceiveSuccessAlert },
+                set: { viewModel.showReceiveSuccessAlert = $0 }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("声を受け取りました。")
+        }
         .overlay {
-            if viewModel.showReceiveSuccessConfetti {
+            if viewModel.showReceiveSuccessAlert {
                 ConfettiView()
                     .allowsHitTesting(false)
                     .ignoresSafeArea()
                     .transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: 0.4), value: viewModel.showReceiveSuccessConfetti)
+        .animation(.easeOut(duration: 0.4), value: viewModel.showReceiveSuccessAlert)
     }
 }
 
